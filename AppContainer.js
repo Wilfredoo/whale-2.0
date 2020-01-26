@@ -1,5 +1,4 @@
 import Map from "./src/map/Map";
-import Locatione from "./src/location/MyLocation";
 import History from "./src/history/History";
 import Profile from "./src/profile/Profile";
 import { createBottomTabNavigator } from "react-navigation-tabs";
@@ -11,18 +10,21 @@ import Icon from "@expo/vector-icons/Ionicons";
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { createSwitchNavigator, createAppContainer } from "react-navigation";
 
-class App extends Component {
+class AppContainer extends Component {
   render() {
-    // return <AppContainer  />;
-    return <Locatione />;
+    console.log("app container 2", this.props);
+    return (
+      <DashboardTabNavigator screenProps={{ someValue: "my name is Juan" }} />
+    );
   }
 }
-export default App;
+export default AppContainer;
 
 const DashboardTabNavigator = createBottomTabNavigator(
   {
     Profile: {
       screen: Profile,
+      name: "brent",
       navigationOptions: {
         title: "Profile",
         tabBarLabel: "Profile",
@@ -106,7 +108,7 @@ const AppSwitchNavigator = createSwitchNavigator({
   Dashboard: { screen: AppDrawerNavigator }
 });
 
-const AppContainer = createAppContainer(AppSwitchNavigator);
+const AppContainer2 = createAppContainer(AppSwitchNavigator);
 
 const styles = StyleSheet.create({
   container: {
