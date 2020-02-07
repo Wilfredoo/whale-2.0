@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 import Map from "../map/Map.js";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
@@ -8,9 +8,16 @@ import firebase from "firebase";
 import registerForPushNotificationsAsync from "../../helpers/pushToken.js";
 
 class Main extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      anonymousLocations: null
+    };
+  }
+
   async componentDidMount() {
-    const tokens = await registerForPushNotificationsAsync();
     this.readAllAnonymousLocations();
+    const tokens = await registerForPushNotificationsAsync();
     this.setState(
       { normal: tokens.token, nakedToken: tokens.nakedToken },
       () => {}
@@ -43,20 +50,18 @@ class Main extends Component {
         oneAnonLocation.push(thing.val().latitude, thing.val().longitude);
         anonLocations.push(oneAnonLocation);
       });
-      console.log("all locations", anonLocations);
-      this.setState({ anonymousLocations: anonLocations }, () => {
-        console.log(
-          "anonymous locations in state",
-          this.state.anonymousLocations
-        );
-      });
+      // console.log("all locations", anonLocations);
+      this.setState({ anonymousLocations: anonLocations }, () => {});
     });
   };
 
   render() {
     return (
       <View style={styles.container}>
-        <Map location={this.props.location} />
+        <Map
+          location={this.props.location}
+          anonymousLocations={this.state.anonymousLocations}
+        />
         <MapView.Callout>
           <View style={styles.sonarView}>
             <TouchableOpacity onPress={() => this.sendMyLocationToEveryone()}>

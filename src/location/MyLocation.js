@@ -114,10 +114,10 @@ export default class Locatione extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#ecf0f1"
+    // flex: 1,
+    // alignItems: "center",
+    // justifyContent: "center",
+    // backgroundColor: "#ecf0f1"
   },
   paragraph: {
     margin: 24,
