@@ -10,11 +10,14 @@ import { StyleSheet } from "react-native";
 import Icon from "@expo/vector-icons/Ionicons";
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { createSwitchNavigator, createAppContainer } from "react-navigation";
+import firebase from "firebase";
+import { firebaseConfig } from "./config.js";
+
+firebase.initializeApp(firebaseConfig);
 
 class App extends Component {
   render() {
-    // return <AppContainer  />;
-    return <Locatione />;
+    return <AppContainer />;
   }
 }
 export default App;
@@ -37,7 +40,7 @@ const DashboardTabNavigator = createBottomTabNavigator(
     },
 
     Main: {
-      screen: Map,
+      screen: Locatione,
       navigationOptions: {
         tabBarLabel: "Main",
         tabBarIcon: ({ tintColor }) => (

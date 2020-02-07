@@ -3,30 +3,26 @@ import {
   Platform,
   Text,
   View,
-  Button,
+  StyleSheet,
   Linking,
-  AppState,
   ActivityIndicator,
-  Modal,
-  StyleSheet
+  AppState
 } from "react-native";
-import Constants from "expo-constants";
 import * as Location from "expo-location";
 import * as Permissions from "expo-permissions";
 import * as IntentLauncher from "expo-intent-launcher";
+import Main from "../main/Main.js";
+import Constants from "expo-constants";
 
 export default class Locatione extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      location: null,
-      errorMessage: null,
-      isLocationModalVisible: false,
-      appState: AppState.currentState
-    };
-  }
+  state = {
+    location: null,
+    errorMessage: null,
+    isLocationModalVisible: false,
+    appState: AppState.currentState
+  };
 
-  componentDidMount() {
+  componentWillUnmount() {
     AppState.removeEventListener("change", this.handleAppStateChange);
   }
 
@@ -61,14 +57,11 @@ export default class Locatione extends Component {
         });
         return;
       }
-      let location = await Location.getCurrentPositionAsync({
-        accuracy: Location.Accuracy.BestForNavigation
-      });
 
-      this.setState({ location }, () => {});
+      let location = await Location.getCurrentPositionAsync({});
+      this.setState({ location });
     } catch (error) {
       let status = Location.getProviderStatusAsync();
-
       if (!status.locationServicesEnabled) {
         this.setState({ isLocationModalVisible: true });
       }
@@ -86,6 +79,18 @@ export default class Locatione extends Component {
     this.setState({ openSetting: false });
   };
 
+  fakeLocation = {
+    timestamp: 123123123123,
+    mocked: false,
+    coords: {
+      heading: 0,
+      longitude: 77,
+      speed: 0,
+      altitude: 192,
+      latitude: 28,
+      accuracy: 17
+    }
+  };
   render() {
     let text = "Waiting..";
     if (this.state.errorMessage) {
@@ -94,8 +99,8 @@ export default class Locatione extends Component {
       text = JSON.stringify(this.state.location);
     }
     if (this.state.location !== null) {
-      console.log(this.state.location);
-      return null;
+      return <Main location={this.state.location} />;
+      // return <Main location={this.fakeLocation} />;
     } else {
       return (
         <View style={styles.container}>
@@ -111,6 +116,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
+    backgroundColor: "#ecf0f1"
+  },
+  paragraph: {
+    margin: 24,
+    fontSize: 18,
+    textAlign: "center"
   }
 });
