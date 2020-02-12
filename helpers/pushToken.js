@@ -6,13 +6,15 @@ export default registerForPushNotificationsAsync = async () => {
     Permissions.NOTIFICATIONS
   );
   let finalStatus = existingStatus;
+
   if (existingStatus !== "granted") {
     const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
     finalStatus = status;
   }
 
   if (finalStatus !== "granted") {
-    return;
+    token = "OFF";
+    return token;
   }
 
   try {

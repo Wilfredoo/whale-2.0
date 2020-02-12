@@ -1,9 +1,12 @@
 {
   "expo": {
-    "name": "whale optimized",
+    "name": "Whale App",
     "slug": "whaleOptimized",
     "privacy": "public",
     "sdkVersion": "36.0.0",
+    "android": {
+      "package": "com.wilfredo.geowhale"
+    },
     "platforms": [
       "ios",
       "android",
@@ -11,7 +14,7 @@
     ],
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/splash.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -21,10 +24,11 @@
       "fallbackToCacheTimeout": 0
     },
     "assetBundlePatterns": [
-      "**/*"
+      "assets/*"
     ],
     "ios": {
       "supportsTablet": true
-    }
+    },
+    "description": "Whale is a social geo-location app.  That's right boy."
   }
 }

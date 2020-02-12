@@ -84,10 +84,10 @@ export default class Locatione extends Component {
     mocked: false,
     coords: {
       heading: 0,
-      longitude: 77,
+      latitude: 52,
+      longitude: 13,
       speed: 0,
       altitude: 192,
-      latitude: 28,
       accuracy: 17
     }
   };
@@ -98,26 +98,26 @@ export default class Locatione extends Component {
     } else if (this.state.location) {
       text = JSON.stringify(this.state.location);
     }
-    if (this.state.location !== null) {
-      return <Main location={this.state.location} />;
-      // return <Main location={this.fakeLocation} />;
-    } else {
-      return (
-        <View style={styles.container}>
-          <Text>Map is loading, wait a second</Text>
-          <ActivityIndicator size="large" color="#0000ff" />
-        </View>
-      );
-    }
+    return <Main location={this.fakeLocation} />;
+    // if (this.state.location !== null) {
+    //   return <Main location={this.state.location} />;
+    // } else {
+    //   return (
+    //     <View style={styles.container}>
+    //       <Text>We are trying to get your location</Text>
+    //       <ActivityIndicator size="large" color="#0000ff" />
+    //     </View>
+    //   );
+    // }
   }
 }
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
-    // alignItems: "center",
-    // justifyContent: "center",
-    // backgroundColor: "#ecf0f1"
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#ecf0f1"
   },
   paragraph: {
     margin: 24,
