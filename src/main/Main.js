@@ -7,17 +7,29 @@ import MapView from "react-native-maps";
 import firebase from "firebase";
 import registerForPushNotificationsAsync from "../../helpers/pushToken.js";
 import * as IntentLauncher from "expo-intent-launcher";
+import calculateCoordinates from "../../helpers/calculateCoordinates.js";
+
+let whalesLifetime = new Date().getTime() - 120000 * 3600 * 1000;
 
 class Main extends Component {
   constructor(props) {
     super(props);
     this.state = {
       anonymousLocations: null,
-      notificationsModalVisible: false
+      notificationsModalVisible: false,
+      initialRegionValues: {
+        latsDiff: 52,
+        longDiff: 13.5,
+        maxLatitude: 100,
+        maxLongitude: 80,
+        minLatitude: 100,
+        minLongitude: 30
+      }
     };
   }
 
   async componentDidMount() {
+    console.log("location", this.props.location.coords.accuracy);
     const tokens = await registerForPushNotificationsAsync();
     if (tokens === "OFF") {
       this.setState({ notificationsModalVisible: true });
@@ -53,6 +65,15 @@ class Main extends Component {
       .database()
       .ref("/locations")
       .orderByChild("order");
+    // .startAt(whalesLifetime)
+    // .endAt(Date.now());
+
+    myLocation = [];
+    myLocation.push(
+      this.props.location.coords.latitude,
+      this.props.location.coords.longitude
+    );
+
     locations.on("value", snapshot => {
       anonLocations = [];
 
@@ -64,10 +85,24 @@ class Main extends Component {
           thing.val().nakedToken,
           thing.val().created_at
         );
-        console.log("anon", anonLocations);
         anonLocations.push(oneAnonLocation);
       });
-      this.setState({ anonymousLocations: anonLocations }, () => {});
+
+      anonLocations.push(myLocation);
+
+      const initialRegionValues = calculateCoordinates(
+        anonLocations,
+        this.props.location.coords.accuracy
+      );
+      this.setState(
+        {
+          anonymousLocations: anonLocations,
+          initialRegionValues: initialRegionValues
+        },
+        () => {
+          // console.log("initial region values", initialRegionValues);
+        }
+      );
     });
   };
 
@@ -78,6 +113,7 @@ class Main extends Component {
           location={this.props.location}
           anonymousLocations={this.state.anonymousLocations}
           myToken={this.state.nakedToken}
+          initialRegion={this.state.initialRegionValues}
         />
         <MapView.Callout>
           <View style={styles.sonarView}>

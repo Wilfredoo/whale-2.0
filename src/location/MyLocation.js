@@ -98,17 +98,17 @@ export default class Locatione extends Component {
     } else if (this.state.location) {
       text = JSON.stringify(this.state.location);
     }
-    return <Main location={this.fakeLocation} />;
-    // if (this.state.location !== null) {
-    //   return <Main location={this.state.location} />;
-    // } else {
-    //   return (
-    //     <View style={styles.container}>
-    //       <Text>We are trying to get your location</Text>
-    //       <ActivityIndicator size="large" color="#0000ff" />
-    //     </View>
-    //   );
-    // }
+    // return <Main location={this.fakeLocation} />;
+    if (this.state.location !== null) {
+      return <Main location={this.state.location} />;
+    } else {
+      return (
+        <View style={styles.container}>
+          <Text>We are trying to get your location</Text>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+      );
+    }
   }
 }
 
