@@ -8,7 +8,6 @@ import MarkerComponent from "../marker/Marker.js";
 function Map(props) {
   function render() {
     const { location, anonymousLocations, myToken, initialRegion } = props;
-    console.log("initialRegion", initialRegion.deltaLat);
     return (
       <View style={styles.container}>
         {initialRegion.deltaLat !== undefined &&
@@ -27,15 +26,16 @@ function Map(props) {
               <MapView.UrlTile urlTemplate="https://maps.googleapis.com/maps/api/staticmap?key=YOUR_API_KEY&center=47.61481783906824,-122.38412096178342&zoom=12&format=png&maptype=roadmap&style=element:geometry%7Ccolor:0x242f3e&style=element:labels.text.fill%7Ccolor:0x746855&style=element:labels.text.stroke%7Ccolor:0x242f3e&style=feature:administrative.land_parcel%7Celement:labels%7Cvisibility:off&style=feature:administrative.locality%7Celement:labels.text.fill%7Ccolor:0xd59563&style=feature:poi%7Celement:labels.text%7Cvisibility:off&style=feature:poi%7Celement:labels.text.fill%7Ccolor:0xd59563&style=feature:poi.business%7Cvisibility:off&style=feature:poi.park%7Celement:geometry%7Ccolor:0x263c3f&style=feature:poi.park%7Celement:labels.text.fill%7Ccolor:0x6b9a76&style=feature:road%7Celement:geometry%7Ccolor:0x38414e&style=feature:road%7Celement:geometry.stroke%7Ccolor:0x212a37&style=feature:road%7Celement:labels.icon%7Cvisibility:off&style=feature:road%7Celement:labels.text.fill%7Ccolor:0x9ca5b3&style=feature:road.arterial%7Celement:labels%7Cvisibility:off&style=feature:road.highway%7Celement:geometry%7Ccolor:0x746855&style=feature:road.highway%7Celement:geometry.stroke%7Ccolor:0x1f2835&style=feature:road.highway%7Celement:labels%7Cvisibility:off&style=feature:road.highway%7Celement:labels.text.fill%7Ccolor:0xf3d19c&style=feature:road.local%7Cvisibility:off&style=feature:road.local%7Celement:labels%7Cvisibility:off&style=feature:transit%7Cvisibility:off&style=feature:transit%7Celement:geometry%7Ccolor:0x2f3948&style=feature:transit.station%7Celement:labels.text.fill%7Ccolor:0xd59563&style=feature:water%7Celement:geometry%7Ccolor:0x17263c&style=feature:water%7Celement:labels.text.fill%7Ccolor:0x515c6d&style=feature:water%7Celement:labels.text.stroke%7Ccolor:0x17263c&size=480x360" />
               {anonymousLocations &&
                 anonymousLocations.map(data => {
-                  // console.log("yellow whale", data[2], myToken[1]);
                   if (data[2] === myToken[1]) {
-                    console.log("show yellow whale");
                     return (
-                      <MarkerComponent
-                        data={data}
-                        color={require("../../assets/yellow-whale.png")}
-                        title={"This is you dummy"}
-                      />
+                      <View style={{ zIndex: 100 }}>
+                        <MarkerComponent
+                          style={{ zIndex: 100 }}
+                          data={data}
+                          color={require("../../assets/yellow-whale.png")}
+                          title={"This is you dummy"}
+                        />
+                      </View>
                     );
                   } else {
                     return (

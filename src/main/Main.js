@@ -29,7 +29,6 @@ class Main extends Component {
   }
 
   async componentDidMount() {
-    console.log("location", this.props.location.coords.accuracy);
     const tokens = await registerForPushNotificationsAsync();
     if (tokens === "OFF") {
       this.setState({ notificationsModalVisible: true });
@@ -76,6 +75,7 @@ class Main extends Component {
 
     locations.on("value", snapshot => {
       anonLocations = [];
+      let anonLocationsAndMine = [];
 
       snapshot.forEach(thing => {
         let oneAnonLocation = [];
@@ -86,22 +86,21 @@ class Main extends Component {
           thing.val().created_at
         );
         anonLocations.push(oneAnonLocation);
+        anonLocationsAndMine.push(oneAnonLocation);
       });
 
-      anonLocations.push(myLocation);
+      anonLocationsAndMine.push(myLocation);
 
       const initialRegionValues = calculateCoordinates(
         anonLocations,
-        this.props.location.coords.accuracy
+        this.props.location.coords
       );
       this.setState(
         {
           anonymousLocations: anonLocations,
           initialRegionValues: initialRegionValues
         },
-        () => {
-          // console.log("initial region values", initialRegionValues);
-        }
+        () => {}
       );
     });
   };

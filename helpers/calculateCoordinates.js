@@ -1,4 +1,5 @@
-calculateCoordinates = data => {
+calculateCoordinates = (data, location) => {
+  console.log("is this my location?", location);
   let maxLatitude = -90;
   let minLatitude = 90;
   let maxLongitude = -180;
@@ -12,25 +13,34 @@ calculateCoordinates = data => {
   });
 
   function degreesToRadians(degrees) {
-    return degrees * Math.PI / 180;
+    return (degrees * Math.PI) / 180;
   }
-  
+
   function distanceInKmBetweenEarthCoordinates(lat1, lon1, lat2, lon2) {
     var earthRadiusKm = 6371;
-  
-    var dLat = degreesToRadians(lat2-lat1);
-    var dLon = degreesToRadians(lon2-lon1);
-  
+
+    var dLat = degreesToRadians(lat2 - lat1);
+    var dLon = degreesToRadians(lon2 - lon1);
+
     lat1 = degreesToRadians(lat1);
     lat2 = degreesToRadians(lat2);
-  
-    var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-            Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2); 
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+
+    var a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return earthRadiusKm * c;
   }
 
-  const distance = ???; //this should be meter between the 2 farthest points...
+  let distance = distanceInKmBetweenEarthCoordinates(
+    maxLatitude,
+    maxLongitude,
+    minLatitude,
+    minLongitude
+  );
+  console.log("distance", distance);
+  distance = distance * 2000;
+
   const circumference = 40075;
   const oneDegreeOfLatitudeInMeters = 111.32 * 1000;
   const angularDistance = distance / circumference;
@@ -45,8 +55,8 @@ calculateCoordinates = data => {
     )
   );
 
-  let latsDiff = (maxLatitude + minLatitude) / 2;
-  let longDiff = (maxLongitude + minLongitude) / 2;
+  let latsDiff = (location.latitude + minLatitude) / 2;
+  let longDiff = (maxLongitude + location.longitude) / 2;
   // let deltaLat = (maxLatitude - minLatitude) * 1.25;
   // let deltaLong = (maxLongitude - minLongitude) * 1.25;
   let deltaLat = latitudeDelta;
