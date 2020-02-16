@@ -30,17 +30,31 @@ class Main extends Component {
   }
 
   async componentDidMount() {
+    let permission = await Permissions.askAsync(Permissions.LOCATION);
+    if (permission !== "granted") {
+      this.setState({ locationModalVisible: true });
+    }
+    let location = await Location.getCurrentPositionAsync({});
     const tokens = await registerForPushNotificationsAsync();
     if (tokens === "OFF") {
       this.setState({ notificationsModalVisible: true });
     }
     this.setState(
-      { normal: tokens.token, nakedToken: tokens.nakedToken },
+      {
+        normal: tokens.token,
+        nakedToken: tokens.nakedToken,
+        location: location
+      },
       () => {}
     );
     this.readAllAnonymousLocations();
   }
 
+  openLocationSettings = () => {
+    IntentLauncher.startActivityAsync(
+      IntentLauncher.ACTION_LOCATION_SOURCE_SETTINGS
+    );
+  };
   openNotificationSettings = () => {
     IntentLauncher.startActivityAsync(IntentLauncher.ACTION_SETTINGS);
   };
@@ -61,15 +75,11 @@ class Main extends Component {
   };
 
   readAllAnonymousLocations = () => {
-    console.log("whales life time", whalesLifetime);
-    console.log("date now", Date.now());
-
     let locations = firebase
       .database()
       .ref("/locations")
       .orderByChild("created_at")
       .startAt(whalesLifetime);
-    // .endAt(Date.now());
 
     let myLocation = [];
     myLocation.push(
@@ -78,7 +88,6 @@ class Main extends Component {
     );
 
     locations.on("value", snapshot => {
-      console.log("snapshot is empty dang", snapshot);
       let anonLocations = [];
       let anonLocationsAndMine = [];
 
@@ -129,6 +138,10 @@ class Main extends Component {
         <NotificationModal
           notificationsModalVisible={this.state.notificationsModalVisible}
           openNotificationSettings={this.openNotificationSettings}
+        />
+        <LocationModal
+          locationModalVisible={this.state.locationModalVisible}
+          openLocationSettings={this.openLocationSettings}
         />
       </View>
     );

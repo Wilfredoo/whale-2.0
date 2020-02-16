@@ -1,4 +1,7 @@
 calculateCoordinates = (data, location) => {
+  console.log("location", location);
+  console.log("data", data);
+
   let maxLatitude = -90;
   let minLatitude = 90;
   let maxLongitude = -180;
@@ -53,6 +56,8 @@ calculateCoordinates = (data, location) => {
     )
   );
 
+  // problems: 1 whale was too near and not including my location
+  // problems: no whale I think was a strange zoom as well
   let latsDiff = (minLatitude + location.latitude) / 2;
   let longDiff = (minLongitude + location.longitude) / 2;
   // let deltaLat = (maxLatitude - minLatitude) * 1.25;
@@ -61,12 +66,20 @@ calculateCoordinates = (data, location) => {
   let deltaLong = longitudeDelta;
 
   if (data.length === 0) {
+    console.log("location...", location);
     latsDiff = location.latitude;
     longDiff = location.longitude;
-    deltaLat = 1;
-    deltaLong = 1;
+    deltaLat = 0.8;
+    deltaLong = 0.03;
   }
 
+  console.log(
+    "no locations only mine",
+    latsDiff,
+    longDiff,
+    deltaLat,
+    deltaLong
+  );
   return {
     maxLatitude,
     minLatitude,

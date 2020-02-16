@@ -8,7 +8,6 @@ import MarkerComponent from "../marker/Marker.js";
 function Map(props) {
   function render() {
     const { location, anonymousLocations, myToken, initialRegion } = props;
-    console.log("initial region in map.js", initialRegion);
 
     return (
       <View style={styles.container}>

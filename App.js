@@ -88,7 +88,7 @@ const DashboardStackNavigator = createStackNavigator(
   {
     defaultNavigationOptions: ({ navigation }) => {
       return {
-        headerLeft: (
+        headerLeft: () => (
           <Icon
             style={{ paddingLeft: 10 }}
             onPress={() => navigation.openDrawer()}

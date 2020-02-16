@@ -22,62 +22,76 @@ export default class Locatione extends Component {
     appState: AppState.currentState
   };
 
-  componentWillUnmount() {
-    AppState.removeEventListener("change", this.handleAppStateChange);
+  async componentDidMount() {
+    console.log("happen!");
+    let permission = await Permissions.askAsync(Permissions.LOCATION);
+    console.log("ayayay", permission);
+
+    let location = await Location.getCurrentPositionAsync({});
+    console.log("bailando", location);
   }
 
-  handleAppStateChange = nextAppState => {
-    if (
-      this.state.appState.match(/inactive|background/) &&
-      nextAppState === "active"
-    ) {
-      this._getLocationAsync();
-    }
-    this.setState({ appState: nextAppState });
-  };
+  // componentWillUnmount() {
+  //   AppState.removeEventListener("change", this.handleAppStateChange);
+  // }
 
-  componentWillMount() {
-    AppState.addEventListener("change", this.handleAppStateChange);
-    if (Platform.OS === "android" && !Constants.isDevice) {
-      this.setState({
-        errorMessage:
-          "Oops, this will not work on Sketch in an Android emulator. Try it on your device!"
-      });
-    } else {
-      this._getLocationAsync();
-    }
-  }
+  // handleAppStateChange = nextAppState => {
+  //   if (
+  //     this.state.appState.match(/inactive|background/) &&
+  //     nextAppState === "active"
+  //   ) {
+  //     this._getLocationAsync();
+  //   }
+  //   this.setState({ appState: nextAppState });
+  // };
 
-  _getLocationAsync = async () => {
-    try {
-      let { status } = await Permissions.askAsync(Permissions.LOCATION);
-      if (status !== "granted") {
-        this.setState({
-          errorMessage: "Permission to access location was denied"
-        });
-        return;
-      }
+  // componentWillMount() {
+  //   AppState.addEventListener("change", this.handleAppStateChange);
+  //   if (Platform.OS === "android" && !Constants.isDevice) {
+  //     this.setState({
+  //       errorMessage:
+  //         "Oops, this will not work on Sketch in an Android emulator. Try it on your device!"
+  //     });
+  //   } else {
+  //     this._getLocationAsync();
+  //   }
+  // }
 
-      let location = await Location.getCurrentPositionAsync({});
-      this.setState({ location });
-    } catch (error) {
-      let status = Location.getProviderStatusAsync();
-      if (!status.locationServicesEnabled) {
-        this.setState({ isLocationModalVisible: true });
-      }
-    }
-  };
+  // _getLocationAsync = async () => {
+  //   console.log("lets try this");
 
-  openSetting = () => {
-    if (Platform.OS == "ios") {
-      Linking.openURL("app-settings:");
-    } else {
-      IntentLauncher.startActivityAsync(
-        IntentLauncher.ACTION_LOCATION_SOURCE_SETTINGS
-      );
-    }
-    this.setState({ openSetting: false });
-  };
+  //   try {
+  //     let { status } = await Permissions.askAsync(Permissions.LOCATION);
+  //     if (status !== "granted") {
+  //       this.setState({
+  //         errorMessage: "Permission to access location was denied"
+  //       });
+  //       return;
+  //     }
+
+  //     let location = await Location.getCurrentPositionAsync({});
+  //     console.log("location yes", location);
+  //     this.setState({ location }, () => {
+  //       console.log("cool got the location, location");
+  //     });
+  //   } catch (error) {
+  //     let status = Location.getProviderStatusAsync();
+  //     if (!status.locationServicesEnabled) {
+  //       this.setState({ isLocationModalVisible: true });
+  //     }
+  //   }
+  // };
+
+  // openSetting = () => {
+  //   if (Platform.OS == "ios") {
+  //     Linking.openURL("app-settings:");
+  //   } else {
+  //     IntentLauncher.startActivityAsync(
+  //       IntentLauncher.ACTION_LOCATION_SOURCE_SETTINGS
+  //     );
+  //   }
+  //   this.setState({ openSetting: false });
+  // };
 
   fakeLocation = {
     timestamp: 123123123123,
@@ -98,17 +112,17 @@ export default class Locatione extends Component {
     } else if (this.state.location) {
       text = JSON.stringify(this.state.location);
     }
-    return <Main location={this.fakeLocation} />;
-    // if (this.state.location !== null) {
-    //   return <Main location={this.state.location} />;
-    // } else {
-    //   return (
-    //     <View style={styles.container}>
-    //       <Text>We are trying to get your location</Text>
-    //       <ActivityIndicator size="large" color="#0000ff" />
-    //     </View>
-    //   );
-    // }
+    // return <Main location={this.fakeLocation} />;
+    if (this.state.location !== null) {
+      return <Main location={this.state.location} />;
+    } else {
+      return (
+        <View style={styles.container}>
+          <Text>We are trying to get your location</Text>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+      );
+    }
   }
 }
 
