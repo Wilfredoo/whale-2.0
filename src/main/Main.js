@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { View, StyleSheet, Modal, Text, Button, Image } from "react-native";
 import Map from "../map/Map.js";
+import NotificationModal from "../notificationModal/NotificationModal.js";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
 import MapView from "react-native-maps";
@@ -9,7 +10,7 @@ import registerForPushNotificationsAsync from "../../helpers/pushToken.js";
 import * as IntentLauncher from "expo-intent-launcher";
 import calculateCoordinates from "../../helpers/calculateCoordinates.js";
 
-let whalesLifetime = new Date().getTime() - 120000 * 3600 * 1000;
+let whalesLifetime = new Date().getTime() - 48 * 60 * 60 * 1000;
 
 class Main extends Component {
   constructor(props) {
@@ -60,21 +61,25 @@ class Main extends Component {
   };
 
   readAllAnonymousLocations = () => {
+    console.log("whales life time", whalesLifetime);
+    console.log("date now", Date.now());
+
     let locations = firebase
       .database()
       .ref("/locations")
-      .orderByChild("order");
-    // .startAt(whalesLifetime)
+      .orderByChild("created_at")
+      .startAt(whalesLifetime);
     // .endAt(Date.now());
 
-    myLocation = [];
+    let myLocation = [];
     myLocation.push(
       this.props.location.coords.latitude,
       this.props.location.coords.longitude
     );
 
     locations.on("value", snapshot => {
-      anonLocations = [];
+      console.log("snapshot is empty dang", snapshot);
+      let anonLocations = [];
       let anonLocationsAndMine = [];
 
       snapshot.forEach(thing => {
@@ -121,26 +126,10 @@ class Main extends Component {
             </TouchableOpacity>
           </View>
         </MapView.Callout>
-        <Modal visible={this.state.notificationsModalVisible}>
-          <View style={styles.modal}>
-            <Image
-              source={require("../../assets/alarmedWhale.png")}
-              style={{ width: 80, height: 80 }}
-              resizeMode="contain"
-            />
-            <Text style={styles.modalText}>
-              Oh oh, your notifications are disabled, please turn them on so you
-              can use the app normally.
-            </Text>
-            <View style={styles.button}>
-              <Button
-                color="black"
-                title="OK"
-                onPress={() => this.openNotificationSettings()}
-              ></Button>
-            </View>
-          </View>
-        </Modal>
+        <NotificationModal
+          notificationsModalVisible={this.state.notificationsModalVisible}
+          openNotificationSettings={this.openNotificationSettings}
+        />
       </View>
     );
   }
@@ -152,19 +141,5 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "flex-end"
-  },
-  modal: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 30
-  },
-  modalText: {
-    textAlign: "center",
-    marginBottom: 35,
-    marginTop: 20
-  },
-  button: {
-    width: 50
   }
 });

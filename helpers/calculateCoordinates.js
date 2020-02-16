@@ -1,5 +1,4 @@
 calculateCoordinates = (data, location) => {
-  console.log("is this my location?", location);
   let maxLatitude = -90;
   let minLatitude = 90;
   let maxLongitude = -180;
@@ -38,7 +37,6 @@ calculateCoordinates = (data, location) => {
     minLatitude,
     minLongitude
   );
-  console.log("distance", distance);
   distance = distance * 2000;
 
   const circumference = 40075;
@@ -55,12 +53,19 @@ calculateCoordinates = (data, location) => {
     )
   );
 
-  let latsDiff = (location.latitude + minLatitude) / 2;
-  let longDiff = (maxLongitude + location.longitude) / 2;
+  let latsDiff = (minLatitude + location.latitude) / 2;
+  let longDiff = (minLongitude + location.longitude) / 2;
   // let deltaLat = (maxLatitude - minLatitude) * 1.25;
   // let deltaLong = (maxLongitude - minLongitude) * 1.25;
   let deltaLat = latitudeDelta;
   let deltaLong = longitudeDelta;
+
+  if (data.length === 0) {
+    latsDiff = location.latitude;
+    longDiff = location.longitude;
+    deltaLat = 1;
+    deltaLong = 1;
+  }
 
   return {
     maxLatitude,

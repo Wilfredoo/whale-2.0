@@ -4,7 +4,7 @@ import { StyleSheet, Text, View } from "react-native";
 export default function History() {
   return (
     <View style={styles.container}>
-      <Text>History</Text>
+      <Text>This section not ready yet, wait for Whale 2.0</Text>
     </View>
   );
 }

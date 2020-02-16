@@ -24,5 +24,8 @@ export default registerForPushNotificationsAsync = async () => {
     return { token, nakedToken };
   } catch (error) {
     console.log("there is an error with push notifications", error);
+    let token = false;
+    let nakedToken = "errorToken123";
+    return { token, nakedToken };
   }
 };
