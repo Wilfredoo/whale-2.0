@@ -1,7 +1,6 @@
 import React from "react";
 import { mapStyle } from "../../helpers/mapStyle.js";
 import MapView from "react-native-maps";
-import { Marker } from "react-native-maps";
 import { StyleSheet, Dimensions, Text, View, Image } from "react-native";
 import MarkerComponent from "../marker/Marker.js";
 

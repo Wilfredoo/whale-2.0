@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { View, StyleSheet, Modal, Text, Button, Image } from "react-native";
 import Map from "../map/Map.js";
 import NotificationModal from "../notificationModal/NotificationModal.js";
+import LocationModal from "../locationModal/LocationModal.js";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
 import MapView from "react-native-maps";
@@ -9,6 +10,8 @@ import firebase from "firebase";
 import registerForPushNotificationsAsync from "../../helpers/pushToken.js";
 import * as IntentLauncher from "expo-intent-launcher";
 import calculateCoordinates from "../../helpers/calculateCoordinates.js";
+import * as Permissions from "expo-permissions";
+import * as Location from "expo-location";
 
 let whalesLifetime = new Date().getTime() - 48 * 60 * 60 * 1000;
 
@@ -17,7 +20,9 @@ class Main extends Component {
     super(props);
     this.state = {
       anonymousLocations: null,
+      location: { coords: [] },
       notificationsModalVisible: false,
+      locationModalVisible: false,
       initialRegionValues: {
         latsDiff: 52,
         longDiff: 13.5,
@@ -31,24 +36,43 @@ class Main extends Component {
 
   async componentDidMount() {
     let permission = await Permissions.askAsync(Permissions.LOCATION);
-    if (permission !== "granted") {
+    if (permission.granted !== true) {
       this.setState({ locationModalVisible: true });
     }
     let location = await Location.getCurrentPositionAsync({});
+    this.setState({ location: location });
+
     const tokens = await registerForPushNotificationsAsync();
     if (tokens === "OFF") {
       this.setState({ notificationsModalVisible: true });
     }
-    this.setState(
-      {
-        normal: tokens.token,
-        nakedToken: tokens.nakedToken,
-        location: location
-      },
-      () => {}
-    );
-    this.readAllAnonymousLocations();
+    this.setState({
+      normal: tokens.token,
+      nakedToken: tokens.nakedToken
+    });
+    // this.executeQueries();
+    await this.readAllAnonymousLocations();
   }
+
+  // executeQueries = async () => {
+  //   let anonLocations;
+  //   let initialRegionValues;
+
+  //   await readAllAnonymousLocations(
+  //     this.state.location.coords.latitude,
+  //     this.state.location.coords.longitude
+  //   );
+  //   this.setState(
+  //     {
+  //       anonymousLocations: anonLocations,
+  //       initialRegionValues: initialRegionValues
+  //     },
+  //     () => {
+  //
+  //       );
+  //     }
+  //   );
+  // };
 
   openLocationSettings = () => {
     IntentLauncher.startActivityAsync(
@@ -66,8 +90,8 @@ class Main extends Component {
       .child(this.state.nakedToken[1])
       .set({
         nakedToken: this.state.nakedToken[1],
-        latitude: this.props.location.coords.latitude,
-        longitude: this.props.location.coords.longitude,
+        latitude: this.state.location.coords.latitude,
+        longitude: this.state.location.coords.longitude,
         created_at: Date.now(),
         order: -Date.now(),
         type: "ocean"
@@ -83,10 +107,9 @@ class Main extends Component {
 
     let myLocation = [];
     myLocation.push(
-      this.props.location.coords.latitude,
-      this.props.location.coords.longitude
+      this.state.location.coords.latitude,
+      this.state.location.coords.longitude
     );
-
     locations.on("value", snapshot => {
       let anonLocations = [];
       let anonLocationsAndMine = [];
@@ -106,8 +129,9 @@ class Main extends Component {
       anonLocationsAndMine.push(myLocation);
 
       const initialRegionValues = calculateCoordinates(
-        anonLocations,
-        this.props.location.coords
+        anonLocationsAndMine,
+        this.state.location.coords.latitude,
+        this.state.location.coords.longitude
       );
       this.setState(
         {
@@ -123,7 +147,7 @@ class Main extends Component {
     return (
       <View style={styles.container}>
         <Map
-          location={this.props.location}
+          location={this.state.location}
           anonymousLocations={this.state.anonymousLocations}
           myToken={this.state.nakedToken}
           initialRegion={this.state.initialRegionValues}

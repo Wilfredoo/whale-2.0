@@ -1,5 +1,5 @@
 import Map from "./src/map/Map";
-import Locatione from "./src/location/MyLocation";
+import Main from "./src/main/Main";
 import History from "./src/history/History";
 import Profile from "./src/profile/Profile";
 import { createBottomTabNavigator } from "react-navigation-tabs";
@@ -42,7 +42,7 @@ const DashboardTabNavigator = createBottomTabNavigator(
     },
 
     Main: {
-      screen: Locatione,
+      screen: Main,
       navigationOptions: {
         tabBarLabel: "Main",
         tabBarIcon: ({ tintColor }) => (

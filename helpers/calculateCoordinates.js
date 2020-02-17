@@ -1,6 +1,6 @@
-calculateCoordinates = (data, location) => {
-  console.log("location", location);
-  console.log("data", data);
+calculateCoordinates = (data, myLat, myLong) => {
+  console.log("my lat", myLat);
+  console.log("my long", myLong);
 
   let maxLatitude = -90;
   let minLatitude = 90;
@@ -40,11 +40,16 @@ calculateCoordinates = (data, location) => {
     minLatitude,
     minLongitude
   );
+
+  if (distance < 1) {
+    distance = 1;
+  }
   distance = distance * 2000;
 
   const circumference = 40075;
   const oneDegreeOfLatitudeInMeters = 111.32 * 1000;
   const angularDistance = distance / circumference;
+  console.log("max mins", maxLatitude, maxLongitude, minLatitude, minLongitude);
 
   const latitudeDelta = distance / oneDegreeOfLatitudeInMeters;
   const longitudeDelta = Math.abs(
@@ -55,31 +60,22 @@ calculateCoordinates = (data, location) => {
           Math.sin((maxLatitude + minLatitude) / 2)
     )
   );
+  // console.log("deltas", latitudeDelta, longitudeDelta);
 
-  // problems: 1 whale was too near and not including my location
-  // problems: no whale I think was a strange zoom as well
-  let latsDiff = (minLatitude + location.latitude) / 2;
-  let longDiff = (minLongitude + location.longitude) / 2;
+  let latsDiff = (minLatitude + myLat) / 2;
+  let longDiff = (minLongitude + myLong) / 2;
   // let deltaLat = (maxLatitude - minLatitude) * 1.25;
   // let deltaLong = (maxLongitude - minLongitude) * 1.25;
   let deltaLat = latitudeDelta;
   let deltaLong = longitudeDelta;
 
   if (data.length === 0) {
-    console.log("location...", location);
-    latsDiff = location.latitude;
-    longDiff = location.longitude;
+    latsDiff = myLat;
+    longDiff = myLong;
     deltaLat = 0.8;
     deltaLong = 0.03;
   }
 
-  console.log(
-    "no locations only mine",
-    latsDiff,
-    longDiff,
-    deltaLat,
-    deltaLong
-  );
   return {
     maxLatitude,
     minLatitude,

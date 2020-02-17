@@ -2,8 +2,8 @@ import React from "react";
 import { View, Text, StyleSheet, Image, Modal, Button } from "react-native";
 
 export default function LocationModal({
-  notificationsModalVisible,
-  openNotificationSettings
+  locationModalVisible,
+  openLocationSettings
 }) {
   return (
     <View>
