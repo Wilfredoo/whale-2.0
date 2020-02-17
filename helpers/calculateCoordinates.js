@@ -1,7 +1,4 @@
 calculateCoordinates = (data, myLat, myLong) => {
-  console.log("my lat", myLat);
-  console.log("my long", myLong);
-
   let maxLatitude = -90;
   let minLatitude = 90;
   let maxLongitude = -180;
@@ -44,12 +41,15 @@ calculateCoordinates = (data, myLat, myLong) => {
   if (distance < 1) {
     distance = 1;
   }
-  distance = distance * 2000;
 
+  if (distance > 3000) {
+    distance = distance * 1000;
+  } else {
+    distance = distance * 2000;
+  }
   const circumference = 40075;
   const oneDegreeOfLatitudeInMeters = 111.32 * 1000;
   const angularDistance = distance / circumference;
-  console.log("max mins", maxLatitude, maxLongitude, minLatitude, minLongitude);
 
   const latitudeDelta = distance / oneDegreeOfLatitudeInMeters;
   const longitudeDelta = Math.abs(
@@ -60,15 +60,27 @@ calculateCoordinates = (data, myLat, myLong) => {
           Math.sin((maxLatitude + minLatitude) / 2)
     )
   );
-  // console.log("deltas", latitudeDelta, longitudeDelta);
 
-  let latsDiff = (minLatitude + myLat) / 2;
-  let longDiff = (minLongitude + myLong) / 2;
+  let latsDiff;
+  let longDiff;
+  if (distance > 3000000) {
+    console.log("distance is too far");
+    latsDiff = myLat;
+    longDiff = myLong;
+  } else {
+    console.log("not that far");
+    latsDiff = (minLatitude + myLat) / 2;
+    longDiff = (minLongitude + myLong) / 2;
+  }
+
+  // let latsDiff = (minLatitude + myLat) / 2;
+  // let longDiff = (minLongitude + myLong) / 2;
   // let deltaLat = (maxLatitude - minLatitude) * 1.25;
   // let deltaLong = (maxLongitude - minLongitude) * 1.25;
   let deltaLat = latitudeDelta;
   let deltaLong = longitudeDelta;
 
+  console.log("deltas", deltaLat, deltaLong);
   if (data.length === 0) {
     latsDiff = myLat;
     longDiff = myLong;
