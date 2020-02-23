@@ -6,20 +6,20 @@ import MarkerComponent from "../marker/Marker.js";
 
 function Map(props) {
   function render() {
-    const { location, anonymousLocations, myToken, initialRegion } = props;
+    const { anonymousLocations, myToken, initialRegion } = props;
 
     return (
       <View style={styles.container}>
-        {initialRegion.deltaLat !== undefined &&
-          initialRegion.deltaLong !== undefined && (
+        {initialRegion.latitudeDelta !== undefined &&
+          initialRegion.longitudeDelta !== undefined && (
             <MapView
               customMapStyle={mapStyle}
               showsUserLocation
               initialRegion={{
-                latitude: initialRegion.latsDiff,
-                longitude: initialRegion.longDiff,
-                latitudeDelta: initialRegion.deltaLat,
-                longitudeDelta: initialRegion.deltaLong
+                latitude: initialRegion.initialLatitude,
+                longitude: initialRegion.initialLongitude,
+                latitudeDelta: initialRegion.latitudeDelta,
+                longitudeDelta: initialRegion.longitudeDelta
               }}
               style={styles.mapStyle}
             >

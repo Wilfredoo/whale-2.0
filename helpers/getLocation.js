@@ -8,6 +8,7 @@ getLocationAsync = async () => {
     });
     return location;
   } catch (error) {
+    console.log("error in location", error);
     return false;
   }
 };
@@ -18,6 +19,8 @@ getLocationPermissions = async => {
   if (status === "granted") {
     return true;
   } else {
+    console.log("status is not granted for location", status);
+
     return false;
   }
 };

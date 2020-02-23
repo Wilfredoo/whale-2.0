@@ -5,14 +5,16 @@
     "privacy": "public",
     "sdkVersion": "36.0.0",
     "android": {
-      "package": "com.wilfredo.geowhale"
+      "package": "com.wilfredo.geowhale",
+      "versionCode": 3,
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyCp-BUoX8B8699rkbnb2P2CK4gXSeesVcc"
+        }
+      }
     },
-    "platforms": [
-      "ios",
-      "android",
-      "web"
-    ],
-    "version": "1.0.0",
+    "platforms": ["ios", "android", "web"],
+    "version": "2.0.0",
     "orientation": "portrait",
     "icon": "./assets/splash.png",
     "splash": {
@@ -23,9 +25,7 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "assets/*"
-    ],
+    "assetBundlePatterns": ["assets/*"],
     "ios": {
       "supportsTablet": true
     },

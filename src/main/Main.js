@@ -24,8 +24,8 @@ class Main extends Component {
       notificationsModalVisible: false,
       locationModalVisible: false,
       initialRegionValues: {
-        latsDiff: 52,
-        longDiff: 13.5,
+        initialLatitude: 52,
+        initialLongitude: 13.5,
         maxLatitude: 100,
         maxLongitude: 80,
         minLatitude: 100,
@@ -86,8 +86,8 @@ class Main extends Component {
   sendMyLocationToEveryone = () => {
     firebase
       .database()
-      // .ref("/locationsT")
-      .ref("/locations")
+      .ref("/locationsT")
+      // .ref("/locations")
       .child(this.state.nakedToken[1])
       .set({
         nakedToken: this.state.nakedToken[1],
@@ -102,9 +102,8 @@ class Main extends Component {
   readAllAnonymousLocations = () => {
     let locations = firebase
       .database()
-      // .ref("/locationsT")
-      .ref("/locations")
-
+      .ref("/locationsT")
+      // .ref("/locations")
       .orderByChild("created_at")
       .startAt(whalesLifetime);
 
@@ -147,13 +146,24 @@ class Main extends Component {
   };
 
   render() {
+    const {
+      location,
+      anonymousLocations,
+      nakedToken,
+      initialRegionValues,
+      notificationsModalVisible,
+      locationModalVisible,
+      openLocationSettings,
+      openNotificationSettings
+    } = this.state;
+
     return (
       <View style={styles.container}>
         <Map
-          location={this.state.location}
-          anonymousLocations={this.state.anonymousLocations}
-          myToken={this.state.nakedToken}
-          initialRegion={this.state.initialRegionValues}
+          location={location}
+          anonymousLocations={anonymousLocations}
+          myToken={nakedToken}
+          initialRegion={initialRegionValues}
         />
         <MapView.Callout>
           <View style={styles.sonarView}>
@@ -163,12 +173,12 @@ class Main extends Component {
           </View>
         </MapView.Callout>
         <NotificationModal
-          notificationsModalVisible={this.state.notificationsModalVisible}
-          openNotificationSettings={this.openNotificationSettings}
+          notificationsModalVisible={notificationsModalVisible}
+          openNotificationSettings={openNotificationSettings}
         />
         <LocationModal
-          locationModalVisible={this.state.locationModalVisible}
-          openLocationSettings={this.openLocationSettings}
+          locationModalVisible={locationModalVisible}
+          openLocationSettings={openLocationSettings}
         />
       </View>
     );
