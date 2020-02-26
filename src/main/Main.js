@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { View, StyleSheet, Modal, Text, Button, Image } from "react-native";
 import Map from "../map/Map.js";
+import AuthButton from "../auth/AuthButton.js";
 import NotificationModal from "../notificationModal/NotificationModal.js";
 import LocationModal from "../locationModal/LocationModal.js";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -10,6 +11,8 @@ import firebase from "firebase";
 import registerForPushNotificationsAsync from "../../helpers/pushToken.js";
 import * as IntentLauncher from "expo-intent-launcher";
 import calculateCoordinates from "../../helpers/calculateCoordinates.js";
+import openLocationSettings from "../../helpers/calculateCoordinates.js";
+import openNotificationSettings from "../../helpers/calculateCoordinates.js";
 import * as Permissions from "expo-permissions";
 import * as Location from "expo-location";
 
@@ -23,6 +26,7 @@ class Main extends Component {
       location: { coords: [] },
       notificationsModalVisible: false,
       locationModalVisible: false,
+      viewType: "ocean",
       initialRegionValues: {
         initialLatitude: 52,
         initialLongitude: 13.5,
@@ -51,7 +55,12 @@ class Main extends Component {
       nakedToken: tokens.nakedToken
     });
     // this.executeQueries();
+    if (this.state.viewType === "ocean") {
     await this.readAllAnonymousLocations();
+  } else {
+    await this.readLocationsSentToMe();
+
+  }
   }
 
   // executeQueries = async () => {
@@ -74,14 +83,14 @@ class Main extends Component {
   //   );
   // };
 
-  openLocationSettings = () => {
-    IntentLauncher.startActivityAsync(
-      IntentLauncher.ACTION_LOCATION_SOURCE_SETTINGS
-    );
-  };
-  openNotificationSettings = () => {
-    IntentLauncher.startActivityAsync(IntentLauncher.ACTION_SETTINGS);
-  };
+  // openLocationSettings = () => {
+  //   IntentLauncher.startActivityAsync(
+  //     IntentLauncher.ACTION_LOCATION_SOURCE_SETTINGS
+  //   );
+  // };
+  // openNotificationSettings = () => {
+  //   IntentLauncher.startActivityAsync(IntentLauncher.ACTION_SETTINGS);
+  // };
 
   sendMyLocationToEveryone = () => {
     firebase
@@ -99,7 +108,61 @@ class Main extends Component {
       });
   };
 
+  switchToOcean = () => {
+    this.setState({ viewType: "ocean" });
+  };
+
+  switchToSea = () => {
+    this.setState({ viewType: "sea" });
+  };
+
   readAllAnonymousLocations = () => {
+    let locations = firebase
+      .database()
+      // .ref("/locationsT")
+      .ref("/locations")
+      .orderByChild("created_at")
+      .startAt(whalesLifetime);
+
+    let myLocation = [];
+    myLocation.push}(
+      this.state.location.coords.latitude,
+      this.state.location.coords.longitude
+    );
+    locations.on("value", snapshot => {
+      let anonLocations = [];
+      let anonLocationsAndMine = [];
+
+      snapshot.forEach(thing => {
+        let oneAnonLocation = [];
+        oneAnonLocation.push(
+          thing.val().latitude,
+          thing.val().longitude,
+          thing.val().nakedToken,
+          thing.val().created_at
+        );
+        anonLocations.push(oneAnonLocation);
+        anonLocationsAndMine.push(oneAnonLocation);
+      });
+
+      anonLocationsAndMine.push(myLocation);
+
+      const initialRegionValues = calculateCoordinates(
+        anonLocationsAndMine,
+        this.state.location.coords.latitude,
+        this.state.location.coords.longitude
+      );
+      this.setState(
+        {
+          anonymousLocations: anonLocations,
+          initialRegionValues: initialRegionValues
+        },
+        () => {}
+      );
+    });
+  };
+
+readAllAnonymousLocations = () => {
     let locations = firebase
       .database()
       // .ref("/locationsT")
@@ -145,6 +208,8 @@ class Main extends Component {
     });
   };
 
+
+
   render() {
     const {
       location,
@@ -159,12 +224,27 @@ class Main extends Component {
 
     return (
       <View style={styles.container}>
+        {this.state.viewType === "ocean" &&
         <Map
           location={location}
           anonymousLocations={anonymousLocations}
           myToken={nakedToken}
           initialRegion={initialRegionValues}
         />
+        <MapView.Callout>
+          <View style={styles.sonarView}>
+            <TouchableOpacity onPress={() => this.switchToOcean()}>
+              <Button>Ocean</Button>
+            </TouchableOpacity>
+          </View>
+        </MapView.Callout>
+        <MapView.Callout>
+          <View style={styles.sonarView}>
+            <TouchableOpacity onPress={() => this.switchToSea()}>
+              <Button>My Sea</Button>
+            </TouchableOpacity>
+          </View>
+        </MapView.Callout>
         <MapView.Callout>
           <View style={styles.sonarView}>
             <TouchableOpacity onPress={() => this.sendMyLocationToEveryone()}>
@@ -180,10 +260,17 @@ class Main extends Component {
           locationModalVisible={locationModalVisible}
           openLocationSettings={openLocationSettings}
         />
+      }
+      {this.state.viewType === "sea" && 
+      <View>
+        <Text>Please sign up to use the sea</Text>
+        <AuthButton/>
+      </View>
+      }
       </View>
     );
   }
-}
+
 
 export default Main;
 const styles = StyleSheet.create({
