@@ -6,10 +6,10 @@
     "sdkVersion": "36.0.0",
     "android": {
       "package": "com.wilfredo.geowhale",
-      "versionCode": 3,
+      "versionCode": 5,
       "config": {
         "googleMaps": {
-          "apiKey": "AIzaSyCp-BUoX8B8699rkbnb2P2CK4gXSeesVcc"
+          "apiKey": "AIzaSyDo7AtddNW2thZCROmzb0v_a7zCQrCkPH0"
         }
       }
     },

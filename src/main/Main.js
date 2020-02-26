@@ -86,8 +86,8 @@ class Main extends Component {
   sendMyLocationToEveryone = () => {
     firebase
       .database()
-      .ref("/locationsT")
-      // .ref("/locations")
+      // .ref("/locationsT")
+      .ref("/locations")
       .child(this.state.nakedToken[1])
       .set({
         nakedToken: this.state.nakedToken[1],
@@ -102,8 +102,8 @@ class Main extends Component {
   readAllAnonymousLocations = () => {
     let locations = firebase
       .database()
-      .ref("/locationsT")
-      // .ref("/locations")
+      // .ref("/locationsT")
+      .ref("/locations")
       .orderByChild("created_at")
       .startAt(whalesLifetime);
 
