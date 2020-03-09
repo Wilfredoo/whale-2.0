@@ -60,12 +60,8 @@ function Map(props) {
 export default Map;
 
 const styles = StyleSheet.create({
-  container: {},
   mapStyle: {
     width: Dimensions.get("window").width,
     height: Dimensions.get("window").height
-  },
-  sonarView: {
-    marginBottom: "5%"
   }
 });

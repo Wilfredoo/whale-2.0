@@ -40,39 +40,23 @@ calculateCoordinates = (data, myLat, myLong) => {
   let latitudeDelta = (maxLatitude - minLatitude) * 1.25;
   let longitudeDelta = (maxLongitude - minLongitude) * 1.25;
 
-  console.log("distaaance", distance);
-
   if (data.length === 0) {
-    console.log("there are no locations");
     initialLatitude = myLat;
     initialLongitude = myLong;
   }
 
   if (distance < 1) {
     latitudeDelta = 0.1;
-    longitudeDelta = 0.05;
-  }
-
-  if (distance < 20) {
+    longitudeDelta = 0.1;
+  } else if (distance < 20 && distance > 1) {
     latitudeDelta = (maxLatitude - minLatitude) * 2;
     longitudeDelta = (maxLongitude - minLongitude) * 2;
-  }
-
-  if (distance > 7100) {
-    console.log("too far awayyy", distance);
+  } else if (distance > 7100) {
     initialLatitude = myLat;
     initialLongitude = myLong;
     latitudeDelta = (maxLatitude - minLatitude) * 1;
     longitudeDelta = (maxLongitude - minLongitude) * 1;
   }
-
-  console.log(
-    "max and mins",
-    maxLatitude,
-    minLatitude,
-    maxLongitude,
-    minLongitude
-  );
 
   return {
     maxLatitude,

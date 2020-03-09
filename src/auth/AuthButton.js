@@ -1,12 +1,25 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, Button } from "react-native";
 
-export default function AuthButton({}) {
+export default function AuthButton(props) {
   return (
-    <View>
-      <Button onClick={() => this.props.navigation.navigate("PhoneInput")}>
-        Sign Up
-      </Button>
+    <View style={styles.container}>
+      <Text>Profile</Text>
+
+      <TouchableOpacity
+        onPress={() => props.props.navigation.navigate("PhoneInput")}
+      >
+        <Text>phone input!!!</Text>
+      </TouchableOpacity>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center"
+  }
+});

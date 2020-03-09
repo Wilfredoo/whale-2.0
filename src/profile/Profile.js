@@ -1,12 +1,12 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, Button } from "react-native";
 import AuthButton from "../auth/AuthButton.js";
 
-export default function Profile() {
+export default function Profile(props) {
   return (
     <View style={styles.container}>
       <Text>Profile</Text>
-      <AuthButton />
+      <AuthButton props={props} />
     </View>
   );
 }
