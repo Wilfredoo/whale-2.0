@@ -1,8 +1,18 @@
 import React from "react";
 import { mapStyle } from "../../helpers/mapStyle.js";
 import MapView from "react-native-maps";
-import { StyleSheet, Dimensions, Text, View, Image } from "react-native";
+import {
+  StyleSheet,
+  Dimensions,
+  Text,
+  View,
+  Image,
+  Button
+} from "react-native";
 import MarkerComponent from "../marker/Marker.js";
+import { Callout } from "react-native-maps";
+import { TouchableOpacity } from "react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 function Map(props) {
   function render() {
@@ -52,6 +62,33 @@ function Map(props) {
                 })}
             </MapView>
           )}
+        <Callout>
+          <View style={styles.button1}>
+            <TouchableOpacity onPress={() => this.switchToOcean()}>
+              <Button
+                title="See My Ocean"
+                onPress={() => Alert.alert("Simple Button pressed")}
+              />
+            </TouchableOpacity>
+          </View>
+        </Callout>
+        <Callout>
+          <View style={styles.button1}>
+            <TouchableOpacity onPress={() => this.switchToOcean()}>
+              <Button
+                title="Back to The Sea"
+                onPress={() => Alert.alert("Simple Button pressed")}
+              />
+            </TouchableOpacity>
+          </View>
+        </Callout>
+        <Callout>
+          <View style={styles.sonar}>
+            <TouchableOpacity onPress={() => this.sendMyLocationToEveryone()}>
+              <MaterialCommunityIcons name="radar" size={100} color={"red"} />
+            </TouchableOpacity>
+          </View>
+        </Callout>
       </View>
     );
   }
@@ -59,13 +96,26 @@ function Map(props) {
 }
 export default Map;
 
+const windowWidth = Dimensions.get("window").width;
+const windowHeight = Dimensions.get("window").height;
+
 const styles = StyleSheet.create({
   container: {},
   mapStyle: {
-    width: Dimensions.get("window").width,
-    height: Dimensions.get("window").height
+    width: windowWidth,
+    height: windowHeight
   },
-  sonarView: {
-    marginBottom: "5%"
+  button1: {
+    width: windowWidth,
+    height: windowHeight - 5000,
+    justifyContent: "flex-start",
+    alignItems: "center",
+    marginTop: 40
+  },
+  sonar: {
+    width: windowWidth,
+    height: windowHeight - 135,
+    alignItems: "center",
+    justifyContent: "flex-end"
   }
 });

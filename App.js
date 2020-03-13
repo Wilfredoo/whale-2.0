@@ -107,8 +107,7 @@ const DashboardStackNavigator = createStackNavigator(
 const AppDrawerNavigator = createDrawerNavigator({
   Dashboard: {
     screen: DashboardStackNavigator
-  },
-  PhoneInputComponent: { screen: PhoneInputComponent }
+  }
 });
 
 const AppSwitchNavigator = createSwitchNavigator({

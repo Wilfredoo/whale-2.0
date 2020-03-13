@@ -23,5 +23,3 @@ export default function MarkerComponent({ data, color, title }) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({});

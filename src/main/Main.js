@@ -1,5 +1,13 @@
 import React, { Component } from "react";
-import { View, StyleSheet, Modal, Text, Button, Image } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Modal,
+  Text,
+  Button,
+  Image,
+  Dimensions
+} from "react-native";
 import Map from "../map/Map.js";
 import AuthButton from "../auth/AuthButton.js";
 import NotificationModal from "../notificationModal/NotificationModal.js";
@@ -15,6 +23,8 @@ import openLocationSettings from "../../helpers/calculateCoordinates.js";
 import openNotificationSettings from "../../helpers/calculateCoordinates.js";
 import * as Permissions from "expo-permissions";
 import * as Location from "expo-location";
+import { Callout } from "react-native-maps";
+import { mapStyle } from "../../helpers/mapStyle.js";
 
 let whalesLifetime = new Date().getTime() - 48 * 60 * 60 * 1000;
 
@@ -82,15 +92,6 @@ class Main extends Component {
   //       );
   //     }
   //   );
-  // };
-
-  // openLocationSettings = () => {
-  //   IntentLauncher.startActivityAsync(
-  //     IntentLauncher.ACTION_LOCATION_SOURCE_SETTINGS
-  //   );
-  // };
-  // openNotificationSettings = () => {
-  //   IntentLauncher.startActivityAsync(IntentLauncher.ACTION_SETTINGS);
   // };
 
   sendMyLocationToEveryone = () => {
@@ -222,7 +223,7 @@ class Main extends Component {
     } = this.state;
 
     return (
-      <View style={styles.container}>
+      <View>
         {this.state.viewType === "ocean" && (
           <View style={styles.subContainer}>
             <Map
@@ -231,40 +232,6 @@ class Main extends Component {
               myToken={nakedToken}
               initialRegion={initialRegionValues}
             />
-            <MapView.Callout>
-              <View>
-                <TouchableOpacity onPress={() => this.switchToOcean()}>
-                  <Button
-                    title="My ocean"
-                    onPress={() => Alert.alert("Simple Button pressed")}
-                  />
-                </TouchableOpacity>
-              </View>
-            </MapView.Callout>
-            <MapView.Callout>
-              <View>
-                <TouchableOpacity onPress={() => this.switchToOcean()}>
-                  <Button
-                    title="The Sea"
-                    onPress={() => Alert.alert("Simple Button pressed")}
-                  />
-                </TouchableOpacity>
-              </View>
-            </MapView.Callout>
-
-            <MapView.Callout>
-              <View style={styles.sonarView}>
-                <TouchableOpacity
-                  onPress={() => this.sendMyLocationToEveryone()}
-                >
-                  <MaterialCommunityIcons
-                    name="radar"
-                    size={100}
-                    color={"red"}
-                  />
-                </TouchableOpacity>
-              </View>
-            </MapView.Callout>
             <NotificationModal
               notificationsModalVisible={notificationsModalVisible}
               openNotificationSettings={openNotificationSettings}
@@ -289,14 +256,18 @@ class Main extends Component {
 }
 
 export default Main;
+const windowWidth = Dimensions.get("window").width;
+const windowHeight = Dimensions.get("window").height;
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1
+  mapStyle: {
+    width: windowWidth,
+    height: windowHeight
   },
-  subContainer: {},
-  sonarView: {
-    marginBottom: "5%",
+  container: {
+    width: windowWidth,
+    height: windowHeight,
     alignItems: "center",
-    justifyContent: "flex-end"
+    justifyContent: "flex-start"
   }
 });
