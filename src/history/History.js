@@ -1,10 +1,11 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, Button } from "react-native";
+import AuthButton from "../auth/AuthButton.js";
 
-export default function History() {
+export default function History(props) {
   return (
     <View style={styles.container}>
-      <Text>This section not ready yet, wait for Whale 2.0</Text>
+      <AuthButton props={props} />
     </View>
   );
 }

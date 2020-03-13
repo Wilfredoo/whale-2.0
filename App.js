@@ -2,6 +2,9 @@ import Map from "./src/map/Map";
 import Main from "./src/main/Main";
 import History from "./src/history/History";
 import Profile from "./src/profile/Profile";
+import AuthButton from "./src/auth/AuthButton";
+import PhoneInputComponent from "./src/auth/PhoneInputComponent";
+
 import { createBottomTabNavigator } from "react-navigation-tabs";
 import { createStackNavigator } from "react-navigation-stack";
 import { createDrawerNavigator } from "react-navigation-drawer";
@@ -104,19 +107,13 @@ const DashboardStackNavigator = createStackNavigator(
 const AppDrawerNavigator = createDrawerNavigator({
   Dashboard: {
     screen: DashboardStackNavigator
-  }
+  },
+  PhoneInputComponent: { screen: PhoneInputComponent }
 });
 
 const AppSwitchNavigator = createSwitchNavigator({
-  Dashboard: { screen: AppDrawerNavigator }
+  Dashboard: { screen: AppDrawerNavigator },
+  PhoneInputComponent: { screen: PhoneInputComponent }
 });
 
 const AppContainer = createAppContainer(AppSwitchNavigator);
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center"
-  }
-});

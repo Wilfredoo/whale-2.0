@@ -39,6 +39,7 @@ class Main extends Component {
   }
 
   async componentDidMount() {
+    console.log("props navigate", this.props.navigation);
     let permission = await Permissions.askAsync(Permissions.LOCATION);
     if (permission.granted !== true) {
       this.setState({ locationModalVisible: true });
@@ -56,11 +57,11 @@ class Main extends Component {
     });
     // this.executeQueries();
     if (this.state.viewType === "ocean") {
-    await this.readAllAnonymousLocations();
-  } else {
-    await this.readLocationsSentToMe();
-
-  }
+      await this.readAllAnonymousLocations();
+    } else {
+      console.log("nothing");
+      // await this.readLocationsSentToMe();
+    }
   }
 
   // executeQueries = async () => {
@@ -119,54 +120,8 @@ class Main extends Component {
   readAllAnonymousLocations = () => {
     let locations = firebase
       .database()
-      // .ref("/locationsT")
-      .ref("/locations")
-      .orderByChild("created_at")
-      .startAt(whalesLifetime);
-
-    let myLocation = [];
-    myLocation.push}(
-      this.state.location.coords.latitude,
-      this.state.location.coords.longitude
-    );
-    locations.on("value", snapshot => {
-      let anonLocations = [];
-      let anonLocationsAndMine = [];
-
-      snapshot.forEach(thing => {
-        let oneAnonLocation = [];
-        oneAnonLocation.push(
-          thing.val().latitude,
-          thing.val().longitude,
-          thing.val().nakedToken,
-          thing.val().created_at
-        );
-        anonLocations.push(oneAnonLocation);
-        anonLocationsAndMine.push(oneAnonLocation);
-      });
-
-      anonLocationsAndMine.push(myLocation);
-
-      const initialRegionValues = calculateCoordinates(
-        anonLocationsAndMine,
-        this.state.location.coords.latitude,
-        this.state.location.coords.longitude
-      );
-      this.setState(
-        {
-          anonymousLocations: anonLocations,
-          initialRegionValues: initialRegionValues
-        },
-        () => {}
-      );
-    });
-  };
-
-readAllAnonymousLocations = () => {
-    let locations = firebase
-      .database()
-      // .ref("/locationsT")
-      .ref("/locations")
+      .ref("/locationsT")
+      // .ref("/locations")
       .orderByChild("created_at")
       .startAt(whalesLifetime);
 
@@ -208,7 +163,51 @@ readAllAnonymousLocations = () => {
     });
   };
 
+  readAllAnonymousLocations = () => {
+    let locations = firebase
+      .database()
+      .ref("/locationsT")
+      // .ref("/locations")
+      .orderByChild("created_at")
+      .startAt(whalesLifetime);
 
+    let myLocation = [];
+    myLocation.push(
+      this.state.location.coords.latitude,
+      this.state.location.coords.longitude
+    );
+    locations.on("value", snapshot => {
+      let anonLocations = [];
+      let anonLocationsAndMine = [];
+
+      snapshot.forEach(thing => {
+        let oneAnonLocation = [];
+        oneAnonLocation.push(
+          thing.val().latitude,
+          thing.val().longitude,
+          thing.val().nakedToken,
+          thing.val().created_at
+        );
+        anonLocations.push(oneAnonLocation);
+        anonLocationsAndMine.push(oneAnonLocation);
+      });
+
+      anonLocationsAndMine.push(myLocation);
+
+      const initialRegionValues = calculateCoordinates(
+        anonLocationsAndMine,
+        this.state.location.coords.latitude,
+        this.state.location.coords.longitude
+      );
+      this.setState(
+        {
+          anonymousLocations: anonLocations,
+          initialRegionValues: initialRegionValues
+        },
+        () => {}
+      );
+    });
+  };
 
   render() {
     const {
@@ -224,58 +223,79 @@ readAllAnonymousLocations = () => {
 
     return (
       <View style={styles.container}>
-        {this.state.viewType === "ocean" &&
-        <Map
-          location={location}
-          anonymousLocations={anonymousLocations}
-          myToken={nakedToken}
-          initialRegion={initialRegionValues}
-        />
-        <MapView.Callout>
-          <View style={styles.sonarView}>
-            <TouchableOpacity onPress={() => this.switchToOcean()}>
-              <Button>Ocean</Button>
-            </TouchableOpacity>
+        {this.state.viewType === "ocean" && (
+          <View style={styles.subContainer}>
+            <Map
+              location={location}
+              anonymousLocations={anonymousLocations}
+              myToken={nakedToken}
+              initialRegion={initialRegionValues}
+            />
+            <MapView.Callout>
+              <View>
+                <TouchableOpacity onPress={() => this.switchToOcean()}>
+                  <Button
+                    title="My ocean"
+                    onPress={() => Alert.alert("Simple Button pressed")}
+                  />
+                </TouchableOpacity>
+              </View>
+            </MapView.Callout>
+            <MapView.Callout>
+              <View>
+                <TouchableOpacity onPress={() => this.switchToOcean()}>
+                  <Button
+                    title="The Sea"
+                    onPress={() => Alert.alert("Simple Button pressed")}
+                  />
+                </TouchableOpacity>
+              </View>
+            </MapView.Callout>
+
+            <MapView.Callout>
+              <View style={styles.sonarView}>
+                <TouchableOpacity
+                  onPress={() => this.sendMyLocationToEveryone()}
+                >
+                  <MaterialCommunityIcons
+                    name="radar"
+                    size={100}
+                    color={"red"}
+                  />
+                </TouchableOpacity>
+              </View>
+            </MapView.Callout>
+            <NotificationModal
+              notificationsModalVisible={notificationsModalVisible}
+              openNotificationSettings={openNotificationSettings}
+            />
+            <LocationModal
+              locationModalVisible={locationModalVisible}
+              openLocationSettings={openLocationSettings}
+            />
           </View>
-        </MapView.Callout>
-        <MapView.Callout>
-          <View style={styles.sonarView}>
-            <TouchableOpacity onPress={() => this.switchToSea()}>
-              <Button>My Sea</Button>
-            </TouchableOpacity>
-          </View>
-        </MapView.Callout>
-        <MapView.Callout>
-          <View style={styles.sonarView}>
-            <TouchableOpacity onPress={() => this.sendMyLocationToEveryone()}>
-              <MaterialCommunityIcons name="radar" size={100} color={"red"} />
-            </TouchableOpacity>
-          </View>
-        </MapView.Callout>
-        <NotificationModal
-          notificationsModalVisible={notificationsModalVisible}
-          openNotificationSettings={openNotificationSettings}
-        />
-        <LocationModal
-          locationModalVisible={locationModalVisible}
-          openLocationSettings={openLocationSettings}
-        />
-      }
-      {this.state.viewType === "sea" && 
-      <View>
-        <Text>Please sign up to use the sea</Text>
-        <AuthButton/>
-      </View>
-      }
+        )}
+        <View>
+          {this.state.viewType === "sea" && (
+            <View>
+              <Text>Please sign up to use the sea</Text>
+              <AuthButton />
+            </View>
+          )}
+        </View>
       </View>
     );
   }
-
+}
 
 export default Main;
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 1
+  },
+  subContainer: {},
+  sonarView: {
+    marginBottom: "5%",
     alignItems: "center",
     justifyContent: "flex-end"
   }
